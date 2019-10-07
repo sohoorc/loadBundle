@@ -8,7 +8,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Button} from 'react-native';
+import {Platform, StyleSheet, Text, View,Button,NativeModules} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -19,11 +19,23 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+  jump=()=>{
+    NativeModules.RNBridge.jumpNativePage('http://192.168.123.2:5000/outputIOS/ios.main.bundle.js','bundleDemo1')
+  }
+
+  downloadBundle=()=>{
+    NativeModules.RNBridge.downloadBundle()
+  }
+
   render() {
+    console.log(NativeModules)
     return (
       <View style={styles.container}>
-        <Button title="跳转">跳转</Button>
-        <Button title="下载">下载</Button>
+        <Text style={styles.welcome}>RN测试加载Bundle包并跳转！</Text>
+        <View>
+          <Button title="跳转到RNBrowser" onPress={this.jump}></Button>
+          <Button title="下载bundle" onPress={this.downloadBundle}></Button>
+        </View>
       </View>
     );
   }
