@@ -1,6 +1,7 @@
 package com.loadbundle;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactNativeHost;
@@ -11,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import static android.content.ContentValues.TAG;
 
 public class SubSystemDelegate extends ReactActivityDelegate {
 
@@ -46,6 +49,7 @@ public class SubSystemDelegate extends ReactActivityDelegate {
 
                 String file = activity.getFilesDir().getAbsolutePath() + "/" + bundleName + "/" + bundleName + ".bundle";
 //                String file = "http://10.10.1.155:5000/bundle/main.bundle.js";
+                Log.d(TAG, "文件路径是--------"+file);
                 return file;
             }
 
@@ -59,7 +63,7 @@ public class SubSystemDelegate extends ReactActivityDelegate {
             @Override
             protected String getJSMainModuleName() {
 //                return "index";
-                return "loadBundle";
+                return bundleName;
             }
         };
         return mReactNativeHost;
