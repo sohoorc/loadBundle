@@ -30,7 +30,7 @@
   
   RCTRootView *rootView =
   [[RCTRootView alloc] initWithBundleURL: jsCodeLocation
-                              moduleName: @"bundleDemo1"
+                              moduleName: bundleName
                        initialProperties: nil
                            launchOptions: nil];
   rootView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);

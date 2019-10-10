@@ -7,23 +7,16 @@
  * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Button,NativeModules} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Button, NativeModules } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
-  jump=()=>{
-    NativeModules.RNBridge.jumpNativePage('http://192.168.123.2:5000/outputIOS/ios.main.bundle.js','bundleDemo1')
+export default class App extends Component {
+  jump = () => {
+    // NativeModules.RNBridge.jumpNativePage('http://10.10.1.155:5000/bundle/main.bundle.js', 'loadBundle')
+    NativeModules.RNBridge.toast('弹出一个弹窗', 1)
   }
 
-  downloadBundle=()=>{
+  downloadBundle = () => {
     NativeModules.RNBridge.downloadBundle()
   }
 
