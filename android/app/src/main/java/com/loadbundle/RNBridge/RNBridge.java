@@ -65,11 +65,6 @@ public class RNBridge extends ReactContextBaseJavaModule {
   }
 
 
-  private void windowIntent(Class<?> goalClass) {
-//    Intent intent = new Intent(this, goalClass);
-//    startActivity(intent);
-  }
-
   @ReactMethod
   public void downloadBundle() {
 
