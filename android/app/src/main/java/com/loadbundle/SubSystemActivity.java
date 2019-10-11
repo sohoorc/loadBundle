@@ -19,16 +19,10 @@ public class SubSystemActivity extends ReactActivity {
     }
 
 
-//    @Override
-//    protected String getMainComponentName() {
-//        return "bundleTest";
-//    }
-
-
     @Override
     protected ReactActivityDelegate createReactActivityDelegate() {
 
-        SubSystemDelegate delegate = new SubSystemDelegate(this, DispatchUtils.bundleName);
+        SubSystemDelegate delegate = new SubSystemDelegate(this, DispatchUtils.bundleName,DispatchUtils.bundleFileName);
 
         return delegate;
     }

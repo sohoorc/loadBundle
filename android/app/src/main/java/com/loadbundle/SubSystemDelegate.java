@@ -19,12 +19,13 @@ public class SubSystemDelegate extends ReactActivityDelegate {
 
     private Activity activity;
     private String bundleName;
+    private  String bundleFileName;
 
-
-    public SubSystemDelegate(Activity activity, @Nullable String mainComponentName) {
+    public SubSystemDelegate(Activity activity, @Nullable String mainComponentName,@Nullable String FileName) {
         super(activity, mainComponentName);
         this.activity = activity;
         this.bundleName = mainComponentName;
+        this.bundleFileName = FileName;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SubSystemDelegate extends ReactActivityDelegate {
             @Nullable
             @Override
             protected String getJSBundleFile() {
-                String file = activity.getFilesDir().getAbsolutePath()  + "/" + bundleName + ".bundle";
+                String file = activity.getFilesDir().getAbsolutePath()  + "/" +bundleFileName;
 //                String file = activity.getFilesDir().getAbsolutePath() + "/test.bundle.bundle";
 //                String file = "http://10.10.1.155:5000/main.bundle.js";
                 Log.d(TAG, "文件路径是--------"+file);
@@ -56,16 +57,15 @@ public class SubSystemDelegate extends ReactActivityDelegate {
             @Nullable
             @Override
             protected String getBundleAssetName() {
-                Log.d(TAG, "getBundleAssetName: "+bundleName);
-                return bundleName + ".bundle";
-//                return "test.bundle.bundle";
+                Log.d(TAG, "getBundleAssetName: "+bundleFileName);
+                return bundleFileName;
             }
 
             @Override
             protected String getJSMainModuleName() {
                 Log.d(TAG, "getJSMainModuleName: "+bundleName);
-                return "index";
-//                return bundleName;
+//                return "index";
+                return bundleName;
             }
         };
         return mReactNativeHost;

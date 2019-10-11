@@ -3,6 +3,7 @@
 package com.loadbundle.RNBridge;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
+//import com.loadbundle.BuzActivity;
 import com.loadbundle.MainActivity;
 import com.loadbundle.SubSystemActivity;
 import com.loadbundle.utils.DispatchUtils;
@@ -32,11 +34,6 @@ import static android.content.ContentValues.TAG;
 
 public class RNBridge extends ReactContextBaseJavaModule {
   private static ReactApplicationContext context;
-
-//  private static final String SubSystemActivity = "SubSystemActivity";
-  private static final String DURATION_LONG_KEY = "LONG";
-
-
   public RNBridge(ReactApplicationContext reactContext) {
     super(reactContext);
     context = reactContext;
@@ -51,18 +48,22 @@ public class RNBridge extends ReactContextBaseJavaModule {
   public void jumpNativePage(String url, String bundleName) throws Exception {
       DispatchUtils.bundleUrl = url;
       DispatchUtils.bundleName = bundleName;
-//    SubSystemActivity.start(context);
+
+      String bundleFileName = url.substring(url.lastIndexOf("/")+1);
+      DispatchUtils.bundleFileName = bundleFileName;
+      Log.d(TAG,bundleFileName);
     // 检查是否下载过，如果已经下载过则直接打开
-    String f = context.getFilesDir().getAbsolutePath() + "/" + bundleName;
-    this.dlBack(url,context);
+    String f = context.getFilesDir().getAbsolutePath() + "/" + bundleFileName;
+
     File file = new File((f));
     if (file.exists()) {
         SubSystemActivity.start(context);
+        Log.d(TAG,"加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。");
     } else {
-        this.download(bundleName,url);
+//        this.download(bundleName,url);
+        this.dlBack(url,bundleFileName,context);
+        Log.d(TAG,"加载本地文件失败，从远程下载！！！");
     }
-//    Toast.makeText(getReactApplicationContext(), bundleName, duration).show();
-
   }
 
   @ReactMethod
@@ -92,74 +93,74 @@ public class RNBridge extends ReactContextBaseJavaModule {
    *
    * @param bundleName
    */
-  private void download(final String bundleName,String url) {
-      String downloadUrl = url+"/"+bundleName+".bundle.zip";
+//  private void download(final String bundleName,String url) {
+//      String downloadUrl = url;
+//
+//    FileDownloader.setup(context);
+//      Log.d(TAG, "---------url是--------"+downloadUrl);
+//      this.getFilesAllName(context.getFilesDir().getAbsolutePath());
+//
+//    FileDownloader.getImpl().create(downloadUrl).setPath(context.getFilesDir().getAbsolutePath(), true)
+//
+//            .setListener(new FileDownloadListener() {
+//              @Override
+//              protected void started(BaseDownloadTask task) {
+//                super.started(task);
+//                Log.d(TAG,"开始下载数据----------------");
+//              }
+//
+//              @Override
+//              protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+//
+//              }
+//
+//              @Override
+//              protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+//
+//              }
+//
+//              @Override
+//              protected void completed(BaseDownloadTask task) {
+//
+//                try {
+//                  //下载之后解压，然后打开
+//                  ZipUtils.unzip(context.getFilesDir().getAbsolutePath() + "/" + bundleName + ".bundle.zip",context.getFilesDir().getAbsolutePath());
+//                    Log.d(TAG,"--------数据下载完成----------------");
+//
+//                  DispatchUtils.bundleName = bundleName;
+//                  SubSystemActivity.start(context);
+//
+//                } catch (Exception e) {
+//                  e.printStackTrace();
+//                }
+//
+//              }
+//
+//              @Override
+//              protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+//
+//              }
+//
+//              @Override
+//              protected void error(BaseDownloadTask task, Throwable e) {
+//                Log.d(TAG, "error");
+//              }
+//
+//              @Override
+//              protected void warn(BaseDownloadTask task) {
+//
+//              }
+//            }).start();
+//  }
 
-    FileDownloader.setup(context);
-      Log.d(TAG, "---------url是--------"+downloadUrl);
-      this.getFilesAllName(context.getFilesDir().getAbsolutePath());
-
-    FileDownloader.getImpl().create(downloadUrl).setPath(context.getFilesDir().getAbsolutePath(), true)
-
-            .setListener(new FileDownloadListener() {
-              @Override
-              protected void started(BaseDownloadTask task) {
-                super.started(task);
-                Log.d(TAG,"开始下载数据----------------");
-              }
-
-              @Override
-              protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
-              }
-
-              @Override
-              protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
-              }
-
-              @Override
-              protected void completed(BaseDownloadTask task) {
-
-                try {
-                  //下载之后解压，然后打开
-                  ZipUtils.unzip(context.getFilesDir().getAbsolutePath() + "/" + bundleName + ".bundle.zip",context.getFilesDir().getAbsolutePath());
-                    Log.d(TAG,"--------数据下载完成----------------");
-
-                  DispatchUtils.bundleName = bundleName;
-                  SubSystemActivity.start(context);
-
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-
-              }
-
-              @Override
-              protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
-              }
-
-              @Override
-              protected void error(BaseDownloadTask task, Throwable e) {
-                Log.d(TAG, "error");
-              }
-
-              @Override
-              protected void warn(BaseDownloadTask task) {
-
-              }
-            }).start();
-  }
-
-    public void dlBack(String path, Context context)throws Exception
+    public void dlBack(String path,String bundleFileName ,Context context)throws Exception
     {
         URL url = new URL(path);
         InputStream is = url.openStream();
         //截取最后的文件名
         String end = path.substring(path.lastIndexOf("."));
         //打开手机对应的输出流,输出到文件中
-        OutputStream os = context.openFileOutput("bundleTest.bundle", Context.MODE_PRIVATE);
+        OutputStream os = context.openFileOutput(bundleFileName, Context.MODE_PRIVATE);
         byte[] buffer = new byte[1024];
         int len = 0;
         //从输入六中读取数据,读到缓冲区中
@@ -170,6 +171,8 @@ public class RNBridge extends ReactContextBaseJavaModule {
         //关闭输入输出流
         is.close();
         os.close();
+
+        SubSystemActivity.start(context);
     }
 
 }
