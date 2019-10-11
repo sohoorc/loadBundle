@@ -1,4 +1,4 @@
-package com.loadbundle.utils;
+package com.facebook.react;
 
 import android.app.Application;
 import android.support.annotation.Nullable;
@@ -9,6 +9,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.BridgeUtil;
 import com.facebook.react.modules.appregistry.AppRegistry;
 
 import java.io.File;
