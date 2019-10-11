@@ -18,6 +18,13 @@ public class SubSystemActivity extends ReactActivity {
         context.startActivity(starter);
     }
 
+
+//    @Override
+//    protected String getMainComponentName() {
+//        return "bundleTest";
+//    }
+
+
     @Override
     protected ReactActivityDelegate createReactActivityDelegate() {
 

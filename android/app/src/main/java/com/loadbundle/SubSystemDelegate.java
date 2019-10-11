@@ -46,9 +46,9 @@ public class SubSystemDelegate extends ReactActivityDelegate {
             @Nullable
             @Override
             protected String getJSBundleFile() {
-
-//                String file = activity.getFilesDir().getAbsolutePath() + "/" + bundleName + "/" + bundleName + ".bundle";
-                String file = "http://10.10.1.155:5000/main.bundle.js";
+                String file = activity.getFilesDir().getAbsolutePath()  + "/" + bundleName + ".bundle";
+//                String file = activity.getFilesDir().getAbsolutePath() + "/test.bundle.bundle";
+//                String file = "http://10.10.1.155:5000/main.bundle.js";
                 Log.d(TAG, "文件路径是--------"+file);
                 return file;
             }
@@ -57,15 +57,15 @@ public class SubSystemDelegate extends ReactActivityDelegate {
             @Override
             protected String getBundleAssetName() {
                 Log.d(TAG, "getBundleAssetName: "+bundleName);
-//                return bundleName + ".bundle";
-                return "test.bundle.bundle";
+                return bundleName + ".bundle";
+//                return "test.bundle.bundle";
             }
 
             @Override
             protected String getJSMainModuleName() {
                 Log.d(TAG, "getJSMainModuleName: "+bundleName);
-//                return "index";
-                return bundleName;
+                return "index";
+//                return bundleName;
             }
         };
         return mReactNativeHost;
