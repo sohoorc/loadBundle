@@ -1,25 +1,18 @@
 package com.loadbundle;
 
-import com.facebook.react.AsyncReactActivity;
+import android.annotation.SuppressLint;
 
-public class BuzActivity extends AsyncReactActivity {
-    /**
-     * Returns the name of the main component registered from JavaScript.
-     * This is used to schedule rendering of the component.
-     */
+import com.facebook.react.ReactActivity;
+
+import javax.annotation.Nullable;
+
+@SuppressLint("Registered")
+public class BuzActivity extends ReactActivity{
+
+    @Nullable
     @Override
     protected String getMainComponentName() {
-        return "bundleTest";
+        return "bundleDemo1";
     }
 
-
-    @Override
-    protected String getScriptPath() {
-        return "bundleTest.bundle";
-    }
-
-    @Override
-    protected ScriptType getScriptPathType() {
-        return ScriptType.ASSET;
-    }
 }

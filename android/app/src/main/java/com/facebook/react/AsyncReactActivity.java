@@ -1,29 +1,43 @@
+/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 package com.facebook.react;
 
+import javax.annotation.Nullable;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+
 
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
-import com.loadbundle.utils.ScriptLoadUtil;
-import com.loadbundle.MainApplication;
-
+import com.loadbundle.utils.ScriptUtil;
 
 import java.io.File;
 
-import javax.annotation.Nullable;
-
 /**
- * 异步加载业务bundle的activity
+ * ReactActivity 扩展，支持自动加载基础包 Bundle
+ * Create by Songlcy
  */
-public abstract class AsyncReactActivity extends ReactActivity{
+public abstract class AsyncReactActivity extends Activity
+        implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
-    public enum ScriptType {ASSET,FILE}
-
+    // BUNDLE 存储位置类型
+    protected enum BUNDLE_TYPE{
+        ASSET_TYPE,
+        FILE_TYPE
+    }
 
     private final ReactActivityDelegate mDelegate;
 
@@ -31,18 +45,10 @@ public abstract class AsyncReactActivity extends ReactActivity{
         mDelegate = createReactActivityDelegate();
     }
 
-    /**
-     * Returns the name of the main component registered from JavaScript.
-     * This is used to schedule rendering of the component.
-     * e.g. "MoviesApp"
-     */
     protected @Nullable String getMainComponentName() {
         return null;
     }
 
-    /**
-     * Called at construction time, override if you have a custom delegate implementation.
-     */
     protected ReactActivityDelegate createReactActivityDelegate() {
         return new ReactActivityDelegate(this, getMainComponentName());
     }
@@ -50,47 +56,59 @@ public abstract class AsyncReactActivity extends ReactActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ReactInstanceManager manager = ((ReactApplication)getApplication()).getReactNativeHost().getReactInstanceManager();
-        if (!manager.hasStartedCreatingInitialContext()) {
-            manager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
+        initialReactContext(savedInstanceState);
+    }
+
+    protected abstract String getBundlePath(); // 返回 Bundle 文件路径
+    protected abstract BUNDLE_TYPE getBundlePathType();  //  Bundle 文件存储路径类型
+
+    /**
+     * 初始化 ReactContext 上下文环境
+     */
+    private void initialReactContext(final Bundle saveInstanceState) {
+
+        final ReactInstanceManager rim = getReactInstanceManager();
+        boolean hasStartedCreatingInitialContext = rim.hasStartedCreatingInitialContext();
+        if(!hasStartedCreatingInitialContext) {
+            rim.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
                 @Override
                 public void onReactContextInitialized(ReactContext context) {
-                    loadScript();
-                    initView();
-                    manager.removeReactInstanceEventListener(this);
+
+                    // 加载子模块，并绑定视图
+                    loadJSBundle();
+                    attachReactRootView(saveInstanceState);
+                    rim.removeReactInstanceEventListener(this);
                 }
             });
-            ((ReactApplication)getApplication()).getReactNativeHost().getReactInstanceManager().createReactContextInBackground();
-        }else{
-            loadScript();
-            initView();
+            // 初始化 ReactContext, 加载基础 bundle
+            rim.createReactContextInBackground();
+        } else {
+            loadJSBundle();
+            attachReactRootView(saveInstanceState);
         }
-
     }
 
-    protected abstract String getScriptPath();
-    protected abstract ScriptType getScriptPathType();
+    /**
+     * 加载 bundle
+     */
+    private void loadJSBundle() {
 
-    protected void loadScript(){
-        /** all buz module is loaded when in debug mode*/
-        if(ScriptLoadUtil.MULTI_DEBUG){//当设置成debug模式时，所有需要的业务代码已经都加载好了
-            return;
-        }
-        ScriptType pathType = getScriptPathType();
-        String scriptPath = getScriptPath();
-        CatalystInstance instance = ScriptLoadUtil.getCatalystInstance(getReactNativeHost());
-        if(pathType== ScriptType.ASSET) {
-            ScriptLoadUtil.loadScriptFromAsset(getApplicationContext(),instance,scriptPath,false);
-        }else {
+        String bundlePath = getBundlePath();
+        BUNDLE_TYPE bundleType = getBundlePathType();
+        CatalystInstance catalystInstance = ScriptUtil.getCatalystInstance(getReactNativeHost());
+        if(bundleType == BUNDLE_TYPE.ASSET_TYPE) {
+            // 从 Asset 目录下加载 bundle 文件
+            ScriptUtil.loadScriptFromAsset(this,catalystInstance,bundlePath,false);
+        } else {
+            // 从 File 目录下加载 bundle 文件
             File scriptFile = new File(getApplicationContext().getFilesDir()
-                    +File.separator+/*ScriptLoadUtil.REACT_DIR+File.separator+*/scriptPath);
-            scriptPath = scriptFile.getAbsolutePath();
-            ScriptLoadUtil.loadScriptFromFile(scriptPath,instance,scriptPath,false);
+                    + File.separator + bundlePath);
+            ScriptUtil.loadScriptFromFile(scriptFile.getAbsolutePath(), catalystInstance, bundlePath,false);
         }
     }
 
-    protected void initView(){
-        mDelegate.onCreate(null);
+    private void attachReactRootView(Bundle savedInstanceState) {
+        mDelegate.onCreate(savedInstanceState);
     }
 
     @Override
@@ -117,18 +135,8 @@ public abstract class AsyncReactActivity extends ReactActivity{
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return mDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return mDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        return mDelegate.onKeyLongPress(keyCode, event) || super.onKeyLongPress(keyCode, event);
     }
 
     @Override
@@ -166,15 +174,15 @@ public abstract class AsyncReactActivity extends ReactActivity{
         mDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-//    protected final ReactNativeHost getReactNativeHost() {
-//        return mDelegate.getReactNativeHost();
-//    }
-//
-//    protected final ReactInstanceManager getReactInstanceManager() {
-//        return mDelegate.getReactInstanceManager();
-//    }
-//
-//    protected final void loadApp(String appKey) {
-//        mDelegate.loadApp(appKey);
-//    }
+    protected final ReactNativeHost getReactNativeHost() {
+        return mDelegate.getReactNativeHost();
+    }
+
+    protected final ReactInstanceManager getReactInstanceManager() {
+        return mDelegate.getReactInstanceManager();
+    }
+
+    protected final void loadApp(String appKey) {
+        mDelegate.loadApp(appKey);
+    }
 }
