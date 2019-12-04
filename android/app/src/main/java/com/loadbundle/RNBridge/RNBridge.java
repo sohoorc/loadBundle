@@ -8,24 +8,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
-//import com.loadbundle.BuzActivity;
-import com.loadbundle.BuzActivity;
-import com.loadbundle.MainActivity;
 import com.loadbundle.SubSystemActivity;
 import com.loadbundle.utils.DispatchUtils;
 import com.loadbundle.utils.ScriptUtil;
-import com.loadbundle.utils.ZipUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -56,22 +46,21 @@ public class RNBridge extends ReactContextBaseJavaModule {
 
       String bundleFileName = url.substring(url.lastIndexOf("/")+1);
       DispatchUtils.bundleFileName = bundleFileName;
-      Log.d(TAG,bundleFileName);
-//    // 检查是否下载过，如果已经下载过则直接打开
-//    String f = context.getFilesDir().getAbsolutePath() + "/" + bundleFileName;
-//
-//    File file = new File((f));
-//    if (file.exists()) {
-//        SubSystemActivity.start(context);
-//        Log.d(TAG,"加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。");
-//    } else {
-////        this.download(bundleName,url);
-//        this.dlBack(url,bundleFileName,context);
-//        Log.d(TAG,"加载本地文件失败，从远程下载！！！");
-//    }
-      this.loadSubModule();
+      Log.d(TAG,"bundleName是："+bundleFileName);
+      // 检查是否下载过，如果已经下载过则直接打开
+      String f = context.getFilesDir().getAbsolutePath() + "/" + bundleFileName;
+    File file = new File((f));
+    if (file.exists()) {
+        SubSystemActivity.start(context);
+        Log.d(TAG,"加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。加载本地文件成功。");
+    } else {
+//        this.download(bundleName,url);
+        this.dlBack(url,bundleFileName,context);
+        Log.d(TAG,"加载本地文件失败，从远程下载！！！");
+    }
+//      this.loadSubModule();
 
-      this.startRNActivity();
+//      this.startRNActivity();
   }
 
   @ReactMethod
@@ -96,18 +85,6 @@ public class RNBridge extends ReactContextBaseJavaModule {
      */
     private void loadSubModule() {
         ScriptUtil.loadScriptFromAsset(context,rim.getCurrentReactContext().getCatalystInstance(),"main.android.bundle", false);
-//        ScriptUtil.loadScriptFromAsset(this,rim.getCurrentReactContext().getCatalystInstance(),"second_diff.bundle", false);
-    }
-
-    /**
-     * 跳转到指定 RN 模块
-     * @param module
-     */
-    private void startRNActivity() {
-        Intent intent = new Intent();
-        String className = BuzActivity.class.getName();
-        intent.setClassName(context, className);
-        context.startActivity(intent);
     }
 
   /**
