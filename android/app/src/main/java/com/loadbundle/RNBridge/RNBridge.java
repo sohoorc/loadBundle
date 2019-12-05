@@ -3,7 +3,6 @@
 package com.loadbundle.RNBridge;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +12,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.loadbundle.SubSystemActivity;
 import com.loadbundle.utils.DispatchUtils;
-import com.loadbundle.utils.ScriptUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -78,13 +76,6 @@ public class RNBridge extends ReactContextBaseJavaModule {
             Log.d(TAG,"文件目录中包含文件"+files[i].getAbsolutePath());
         }
         return s;
-    }
-
-    /**
-     * 预加载子模块 bundle
-     */
-    private void loadSubModule() {
-        ScriptUtil.loadScriptFromAsset(context,rim.getCurrentReactContext().getCatalystInstance(),"main.android.bundle", false);
     }
 
   /**
