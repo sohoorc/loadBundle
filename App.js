@@ -13,8 +13,6 @@ import { StyleSheet, Text, View, Button, NativeModules } from 'react-native';
 export default class App extends Component {
   jump = () => {
     NativeModules.RNBridge.jumpNativePage('http://10.10.0.82:5000/bundleTest20196666.bundle', 'bundleTest')
-    // NativeModules.RNBridge.jumpNativePage('123', 'loadBundle')
-    // NativeModules.RNBridge.toast('弹出一个弹窗', 1)
   }
  
   downloadBundle = () => {
