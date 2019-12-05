@@ -16,7 +16,7 @@ export default class App extends Component {
     // NativeModules.RNBridge.jumpNativePage('123', 'loadBundle')
     // NativeModules.RNBridge.toast('弹出一个弹窗', 1)
   }
-
+ 
   downloadBundle = () => {
     NativeModules.RNBridge.downloadBundle()
   }
