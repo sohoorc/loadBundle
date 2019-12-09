@@ -17,7 +17,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.reactnative_multibundler.ScriptLoadUtil;
-import com.reactnative_multibundler.demo.MainApplication;
+import com.loadbundle.MainApplication;
 
 
 import java.io.File;
