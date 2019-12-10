@@ -6,8 +6,8 @@ import android.content.Context;
 public class BridgeUtil {
 
     public static void loadScriptFromAsset(Context context,
-                                           CatalystInstance instance,
-                                           String assetName,boolean loadSynchronously) {
+                                    CatalystInstance instance,
+                                    String assetName,boolean loadSynchronously) {
         String source = assetName;
         if(!assetName.startsWith("assets://")) {
             source = "assets://" + assetName;
@@ -17,8 +17,8 @@ public class BridgeUtil {
 
 
     public static void loadScriptFromFile(String fileName,
-                                          CatalystInstance instance,
-                                          String sourceUrl,boolean loadSynchronously) {
+                                    CatalystInstance instance,
+                                    String sourceUrl,boolean loadSynchronously) {
         ((CatalystInstanceImpl)instance).loadScriptFromFile(fileName, sourceUrl,loadSynchronously);
     }
 }
