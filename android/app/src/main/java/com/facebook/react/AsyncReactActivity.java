@@ -9,6 +9,7 @@ package com.facebook.react;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.facebook.react.bridge.CatalystInstance;
@@ -23,6 +24,8 @@ import com.loadbundle.MainApplication;
 import java.io.File;
 
 import javax.annotation.Nullable;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * 异步加载业务bundle的activity
@@ -73,7 +76,6 @@ public abstract class AsyncReactActivity extends androidx.fragment.app.FragmentA
             loadScript();
             initView();
         }
-
     }
 
     protected abstract String getScriptPath();

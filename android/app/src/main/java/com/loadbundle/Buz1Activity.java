@@ -9,32 +9,19 @@ public class Buz1Activity extends AsyncReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "reactnative_multibundler";
+        return "bundleTest";
     }
 
 
     @Override
     protected String getScriptPath() {
-        return "index.android.bundle";
+        return "bundleTest20196666.bundle";
     }
 
     @Override
     protected ScriptType getScriptPathType() {
-        return ScriptType.ASSET;
+//        return ScriptType.ASSET;
+        return null;
     }
 
-//    @Override
-//    public int checkPermission(String permission, int pid, int uid) {
-//        return 0;
-//    }
-//
-//    @Override
-//    public int checkSelfPermission(String permission) {
-//        return 0;
-////    }
-//
-//    @Override
-//    public boolean shouldShowRequestPermissionRationale(String permission) {
-//        return false;
-//    }
 }
